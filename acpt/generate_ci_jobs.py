@@ -3,23 +3,23 @@ import os
 import yaml
 import copy
 
-from bincrafters.build_shared import get_bool_from_env, get_conan_vars, get_recipe_path, get_version_from_ci
-from bincrafters.autodetect import *
-from bincrafters.utils import *
-from bincrafters.check_compatibility import *
-import bincrafters
+from acpt.build_shared import get_bool_from_env, get_conan_vars, get_recipe_path, get_version_from_ci
+from acpt.autodetect import *
+from acpt.utils import *
+from acpt.check_compatibility import *
+import acpt
 
 
 def _is_gha_existing():
-    if utils_file_contains(os.path.join(".github", "workflows", "conan.yml"), "bincrafters-package-tools") \
-            and utils_file_contains(os.path.join(".github", "workflows", "conan.yml"), "bincrafters_package_tools"):
+    if utils_file_contains(os.path.join(".github", "workflows", "conan.yml"), "afgs-package-tools") \
+            or utils_file_contains(os.path.join(".github", "workflows", "conan.yml"), "afgs_package_tools"):
         return True
 
     return False
 
 
 def _run_macos_jobs_on_gha():
-    if utils_file_contains("azure-pipelines.yml", "name: bincrafters/templates") \
+    if utils_file_contains("azure-pipelines.yml", "name: afgs/templates") \
             and utils_file_contains("azure-pipelines.yml", "template: .ci/azure.yml@templates"):
         return False
 
@@ -27,11 +27,11 @@ def _run_macos_jobs_on_gha():
 
 
 def _run_windows_jobs_on_gha():
-    if utils_file_contains("azure-pipelines.yml", "name: bincrafters/templates") \
+    if utils_file_contains("azure-pipelines.yml", "name: afgs/templates") \
             and utils_file_contains("azure-pipelines.yml", "template: .ci/azure.yml@templates"):
         return False
 
-    if utils_file_contains("appveyor.yml", "pip install bincrafters_package_tools"):
+    if utils_file_contains("appveyor.yml", "pip install afgs_package_tools"):
         return False
 
     return True
@@ -41,7 +41,8 @@ def _do_discard_duplicated_build_ids() -> bool:
     return get_bool_from_env("BPT_MATRIX_DISCARD_DUPLICATE_BUILD_IDS", default="true")
 
 
-def _get_base_config(recipe_directory: str, platform: str, split_by_build_types: bool, build_set: str = "full", recipe_type: str = ""):
+def _get_base_config(recipe_directory: str, platform: str, split_by_build_types: bool, build_set: str = "full",
+                     recipe_type: str = ""):
     if recipe_type == "":
         if _do_discard_duplicated_build_ids():
             cwd = os.getcwd()
@@ -61,7 +62,8 @@ def _get_base_config(recipe_directory: str, platform: str, split_by_build_types:
         run_windows = _run_windows_jobs_on_gha()
         if recipe_type == "installer":
             matrix["config"] = [
-                {"name": "Installer Linux", "compiler": "GCC", "version": "7", "os": "ubuntu-20.04", "dockerImage": "conanio/gcc7"},
+                {"name": "Installer Linux", "compiler": "GCC", "version": "7", "os": "ubuntu-20.04",
+                 "dockerImage": "conanio/gcc7"},
                 {"name": "Installer Windows", "compiler": "VISUAL", "version": "16", "os": "windows-2019"},
                 {"name": "Installer macOS", "compiler": "APPLE_CLANG", "version": "11.0", "os": "macos-10.15"}
             ]
@@ -109,7 +111,8 @@ def _get_base_config(recipe_directory: str, platform: str, split_by_build_types:
                     {"name": "Windows VS 2019", "compiler": "VISUAL", "version": "16", "os": "windows-2019"},
                 ]
     elif platform == "azp":
-        if _is_gha_existing() and recipe_type in ["installer", "unconditional_header_only", "recipe_manual_full_matrix"]:
+        if _is_gha_existing() and recipe_type in ["installer", "unconditional_header_only",
+                                                  "recipe_manual_full_matrix"]:
             matrix["config"] = []
             matrix_minimal["config"] = []
         else:
@@ -161,8 +164,8 @@ def generate_ci_jobs(platform: str, recipe_type: str = autodetect(), split_by_bu
 
     if not is_ci_config_compatible(platform=platform, feature="generate-ci-jobs"):
         raise Exception(
-            "bincrafters-package-tools {} requires a newer {} CI config file; minimum version {} - current version {}".format(
-                bincrafters.__version__,
+            "afgs-package-tools {} requires a newer {} CI config file; minimum version {} - current version {}".format(
+                acpt.__version__,
                 platform,
                 get_minimum_compatible_version(platform=platform, feature="generate-ci-jobs"),
                 get_config_file_version()
@@ -183,7 +186,8 @@ def generate_ci_jobs(platform: str, recipe_type: str = autodetect(), split_by_bu
             # The default branch might not be tracked locally
             # i.e. "main" might be unknown, while "origin/main" should always be known
             # similar for the current_branch, so lets use the hash commit which should be always be known
-            changed_dirs.extend(utils_git_get_changed_dirs(base="origin/{}".format(default_branch), head=current_commit))
+            changed_dirs.extend(
+                utils_git_get_changed_dirs(base="origin/{}".format(default_branch), head=current_commit))
 
         if path_filter:
             # Only list directories which start with a certain path

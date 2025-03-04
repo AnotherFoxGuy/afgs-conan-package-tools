@@ -2,14 +2,14 @@ import argparse
 import sys
 import json
 
-from bincrafters.build_autodetect import run_autodetect
-from bincrafters.autodetect import autodetect
-from bincrafters.generate_ci_jobs import generate_ci_jobs
-from bincrafters.prepare_env import prepare_env
+from acpt.build_autodetect import run_autodetect
+from acpt.autodetect import autodetect
+from acpt.generate_ci_jobs import generate_ci_jobs
+from acpt.prepare_env import prepare_env
 
 
 def _parse_arguments(*args):
-    parser = argparse.ArgumentParser(description="Bincrafters Package Tools")
+    parser = argparse.ArgumentParser(description="afgs Package Tools")
     parser.add_argument('--auto', action='store_true',
                         help="Executes builds according to current env variables and recipe type auto detection")
     subparsers = parser.add_subparsers(dest="commands")
@@ -22,7 +22,7 @@ def _parse_arguments(*args):
     prepareenv.add_argument('--platform', type=str, required=True, choices=["gha", "azp"],
                         help="Specfies the CI platform")
     prepareenv.add_argument('--config', type=str, required=True,
-                        help="JSON config string in the bincrafters-package-tools format")
+                        help="JSON config string in the afgs-package-tools format")
     prepareenv.add_argument('--select-config', type=str, required=False,
                         help="AZP only; name which config pair gets applied")
     args = parser.parse_args(*args)

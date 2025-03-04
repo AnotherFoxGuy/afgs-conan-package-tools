@@ -9,7 +9,7 @@ class LibnameConan(ConanFile):
     version = "1.0.0"
     description = "Keep it short"
     topics = ("libname", "logging")
-    url = "https://github.com/bincrafters/community"
+    url = "https://github.com/afgs/community"
     homepage = "https://github.com/original_author/original_lib"
     license = "MIT"  # Indicates license type of the packaged library; please use SPDX Identifiers https://spdx.org/licenses/
     exports_sources = ["CMakeLists.txt"]

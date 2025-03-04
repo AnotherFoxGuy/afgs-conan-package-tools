@@ -4,14 +4,14 @@ import tempfile
 import contextlib
 import os
 import shutil
-from bincrafters import build_shared
+from acpt import build_shared
 
 
 recipe_with_shared_1 = """
 class FoobarConan(ConanFile):
     name = "foobar"
     version = "0.1.0"
-    url = "https://github.com/bincrafters/foobar"
+    url = "https://github.com/afgs/foobar"
     description = "Just another foobar "
     license = "MIT"
     exports = ["LICENSE.md"]
@@ -33,7 +33,7 @@ class FoobarConan(ConanFile):
             self.requires("zlib/1.2.11@conan/stable")
 
     def source(self):
-        repo_url = "https://github.com/bincrafters/foobar.git"
+        repo_url = "https://github.com/afgs/foobar.git"
         self.run("git clone -b v{0} {1} {2}".format(self.version, repo_url, self.source_subfolder))
 
     def build(self):
@@ -50,7 +50,7 @@ recipe_with_shared_2 = """
 class FoobarConan(ConanFile):
     name="foobar"
     version="0.1.0"
-    url="https://github.com/bincrafters/foobar"
+    url="https://github.com/afgs/foobar"
     description="Just another foobar "
     license="MIT"
     exports="LICENSE.md"
@@ -61,7 +61,7 @@ class FoobarConan(ConanFile):
     default_options="shared=False"
 
     def source(self):
-        repo_url = "https://github.com/bincrafters/foobar.git"
+        repo_url = "https://github.com/afgs/foobar.git"
         self.run("git clone -b v{0} {1} {2}".format(self.version, repo_url, self.source_subfolder))
 
     def build(self):
@@ -96,7 +96,7 @@ recipe_with_no_shared_2 = """
 class FoobarConan(ConanFile):
     name = "foobar"
     version = "0.1.0"
-    url = "https://github.com/bincrafters/foobar"
+    url = "https://github.com/afgs/foobar"
     description = "Just another foobar "
     license = "MIT"
     exports = ["LICENSE.md"]
@@ -117,7 +117,7 @@ class FoobarConan(ConanFile):
             self.requires("zlib/1.2.11@conan/stable")
 
     def source(self):
-        repo_url = "https://github.com/bincrafters/foobar.git"
+        repo_url = "https://github.com/afgs/foobar.git"
         self.run("git clone -b v{0} {1} {2}".format(self.version, repo_url, self.source_subfolder))
 
     def build(self):

@@ -44,7 +44,7 @@ tmp/
 .coverage
 .coveragerc
 .pypirc
-bincrafters_package_tools.egg-info/
+afgs_package_tools.egg-info/
 coverage.xml
 dist/
 env/

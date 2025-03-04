@@ -1,5 +1,5 @@
 import os
-from bincrafters.build_shared import get_recipe_path, inspect_value_from_recipe
+from acpt.build_shared import get_recipe_path, inspect_value_from_recipe
 
 _recipe_path = os.path.dirname(get_recipe_path())
 

@@ -3,9 +3,9 @@ import subprocess
 import tempfile
 import os
 
-from bincrafters.build_shared import printer, get_os
-from bincrafters import build_shared
-from bincrafters.autodetect import *
+from acpt.build_shared import printer, get_os
+from acpt import build_shared
+from acpt.autodetect import *
 
 
 def _flush_output():

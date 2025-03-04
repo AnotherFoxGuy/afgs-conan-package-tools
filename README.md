@@ -1,15 +1,10 @@
-[![Build status](https://github.com/bincrafters/bincrafters-package-tools/workflows/bincrafters-package-tools/badge.svg)](https://github.com/bincrafters/bincrafters-package-tools/actions)
-[![Codecov](https://codecov.io/gh/bincrafters/bincrafters-package-tools/branch/main/graph/badge.svg)](https://codecov.io/gh/bincrafters/bincrafters-package-tools)
-[![Pypi Download](https://img.shields.io/badge/download-pypi-blue.svg)](https://pypi.python.org/pypi/bincrafters-package-tools)
+# AnotherFoxGuy's Package Tools (A fork of Bincrafters Package Tools)
 
-# Bincrafters Package Tools
+## A modular toolset for [Conan Package Tools](https://github.com/AnotherFoxGuy/conan-package-tools)
 
-## A modular toolset for [Conan Package Tools](https://github.com/conan-io/conan-package-tools)
-
-This project contains files used by Conan Package Tools for all kinds of bincrafters builds.
+This project contains files used by Conan Package Tools for all kinds of builds.
 
 These scripts are used during build process to allow for rapid testing and prototyping at this time.
-
 
 ### INSTALL
 To install by pip is just one step
@@ -21,17 +16,18 @@ If you want to install by local copy
 
 ### Remote
 Or if you want to download our pip package
-
-    pip install bincrafters_package_tools
+    
+    pip install git+https://github.com/AnotherFoxGuy/conan-package-tools@conan2
+    pip install git+https://github.com/AnotherFoxGuy/afgs-conan-package-tools@develop
 
 
 ### ENVIRONMENT VARIABLES
-All variables supported by Conan package tools, are treated by Bincrafters package tools as well.
+All variables supported by Conan package tools, are treated by AnotherFoxGuy's package tools as well.
 To solve the upload, some variables are customized by default:
 
-**CONAN_UPLOAD**: https://bincrafters.jfrog.io/artifactory/api/conan/public-conan  
+**CONAN_UPLOAD**: https://artifactory.overte.org/artifactory/api/conan/public-conan  
 **CONAN_REFERENCE**: Fields **name** and **version** from conanfile.py  
-**CONAN_USERNAME**: Get from CI env vars. Otherwise, use **bincrafters**  
+**CONAN_USERNAME**: Get from CI env vars. Otherwise, use **afgs**  
 **CONAN_VERSION**: Get from CI env vars.  
 **CONAN_VERSION**: Field **version** from conanfile.py  
 **CONAN_UPLOAD_ONLY_WHEN_STABLE**: True for default template. False for Boost builds.  
@@ -57,9 +53,9 @@ To install extra packages required to test
 #### TESTING
 To run all unit test + code coverage, just execute:
 
-    pip install -r bincrafters/requirements_test.txt
+    pip install -r anotherfoxguy/requirements_test.txt
     cd tests
-    pytest -v --cov=bincrafters
+    pytest -v --cov=afgs
 
 
 #### LICENSE

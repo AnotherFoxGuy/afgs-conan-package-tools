@@ -31,14 +31,14 @@ def get_requires(filename):
 def load_version():
     """Loads a file content"""
     filename = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                                            "bincrafters", "__init__.py"))
+                                            "acpt", "__init__.py"))
     with open(filename, "rt") as version_file:
         conan_init = version_file.read()
         version = re.search("__version__ = '([0-9a-z.-]+)'", conan_init).group(1)
         return version
 
 setup(
-    name='bincrafters_package_tools',
+    name='afgs_package_tools',
     # Versions should comply with PEP440.  For a discussion on single-sourcing
     # the version across setup.py and the project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
@@ -55,14 +55,14 @@ setup(
     long_description=long_description, # Optional
     long_description_content_type='text/markdown',
 
-    description='Bincrafters Packaging tools for build Conan projects',
+    description='AnotherFoxGuy\'s Packaging tools for building Conan projects',
 
     # The project's main homepage.
-    url='https://github.com/bincrafters/bincrafters-package-tools',
+    url='https://github.com/AnotherFoxGuy/afgs-package-tools',
 
     # Author details
-    author='Bincrafters',
-    author_email='bincrafters@gmail.com',
+    author='AnotherFoxGuy',
+    author_email='Edgar@AnotherFoxGuy.com',
 
     # Choose your license
     license='MIT',
@@ -92,14 +92,14 @@ setup(
     # your project is installed. For an analysis of "install_requires" vs pip's
     # requirements files see:
     # https://packaging.python.org/en/latest/requirements.html
-    install_requires=get_requires(os.path.join('bincrafters', 'requirements.txt')),
+    install_requires=get_requires(os.path.join('acpt', 'requirements.txt')),
 
     # List additional groups of dependencies here (e.g. development
     # dependencies). You can install these using the following syntax,
     # for example:
     # $ pip install -e .[dev,test]
     extras_require={
-        'test': get_requires(os.path.join('bincrafters', 'requirements_test.txt'))
+        'test': get_requires(os.path.join('acpt', 'requirements_test.txt'))
     },
 
     # If there are data files included in your packages that need to be
@@ -107,7 +107,7 @@ setup(
     # have to be included in MANIFEST.in as well.
     package_data={
         '': ['*.md'],
-        'bincrafters': ['*.txt', '*.ps1'],
+        'acpt': ['*.txt', '*.ps1'],
     },
 
     # Although 'package_data' is the preferred approach, in some case you may
@@ -121,7 +121,7 @@ setup(
     # pip to create the appropriate form of executable for the target platform.
     entry_points={
         'console_scripts': [
-            'bincrafters-package-tools=bincrafters.cli:cli',
+            'afgs-package-tools=acpt.cli:cli',
         ],
     },
 )

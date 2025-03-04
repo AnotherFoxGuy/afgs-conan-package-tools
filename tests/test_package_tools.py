@@ -1,8 +1,8 @@
 import os
 import platform
 import pytest
-from bincrafters import build_shared
-from bincrafters import build_autodetect
+from acpt import build_shared
+from acpt import build_autodetect
 
 
 @pytest.fixture(autouse=True)
@@ -214,8 +214,8 @@ def test_default_remote_address(set_upload_address):
     assert "https://api.bintray.com/conan/foo/bar" == remote.url
     remote = builder.remotes_manager._remotes[1]
     # windows and linux use different names. containers?
-    assert remote.name in ["bincrafters", "upload_repo"]
-    assert "https://bincrafters.jfrog.io/artifactory/api/conan/public-conan" == remote.url
+    assert remote.name in ["afgs", "upload_repo"]
+    assert "https://afgs.jfrog.io/artifactory/api/conan/public-conan" == remote.url
 
 
 def test_no_upload(set_upload_address_false):
@@ -223,5 +223,5 @@ def test_no_upload(set_upload_address_false):
     assert 1 == len(builder.remotes_manager._remotes)
     remote = builder.remotes_manager._remotes[0]
     # windows and linux use different names. containers?
-    assert remote.name in ["bincrafters", "upload_repo"]
-    assert "https://bincrafters.jfrog.io/artifactory/api/conan/public-conan" == remote.url
+    assert remote.name in ["afgs", "upload_repo"]
+    assert "https://afgs.jfrog.io/artifactory/api/conan/public-conan" == remote.url

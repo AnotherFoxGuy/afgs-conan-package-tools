@@ -3,7 +3,7 @@
 import os
 import pytest
 
-from bincrafters.build_shared import get_recipe_path
+from acpt.build_shared import get_recipe_path
 
 
 @pytest.fixture()

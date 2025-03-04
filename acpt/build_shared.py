@@ -1,13 +1,14 @@
 import os
 import re
 import platform
-from conans.client import conan_api
+from conans.client.loader import ConanFileLoader
 from cpt.packager import ConanMultiPackager
 from cpt.tools import split_colon_env
 from cpt.remotes import RemotesManager
 # from cpt.ci_manager import *
 from cpt.printer import Printer
-from bincrafters.build_paths import BINCRAFTERS_REPO_URL, BINCRAFTERS_LOGIN_USERNAME, BINCRAFTERS_USERNAME, BINCRAFTERS_REPO_NAME
+from acpt.build_paths import CONAN_REPO_URL, CONAN_LOGIN_USERNAME, CONAN_USERNAME, CONAN_REPO_NAME
+from acpt.utils import split_colon_env
 
 printer = Printer()
 # ci_manager = CIManager(printer=printer)
@@ -46,8 +47,8 @@ def inspect_value_from_recipe(attribute, recipe_path):
         if dir_name == "":
             dir_name = "./"
         os.chdir(dir_name)
-        conan_instance, _, _ = conan_api.Conan.factory()
-        inspect_result = conan_instance.inspect(path=conanfile_name, attributes=[attribute])
+        fl = ConanFileLoader()
+        inspect_result = fl.load_basic(conanfile_name)
         result = inspect_result.get(attribute)
     except:
         pass
@@ -149,12 +150,12 @@ def get_conan_vars(recipe=None, kwargs={}):
     if "CONAN_USERNAME" in os.environ and os.getenv("CONAN_USERNAME") != "":
         username_fallback = os.getenv("CONAN_USERNAME")
     else:
-        username_fallback = get_username_from_ci() or BINCRAFTERS_USERNAME
+        username_fallback = get_username_from_ci() or CONAN_USERNAME
 
     if "CONAN_LOGIN_USERNAME" in os.environ and os.getenv("CONAN_LOGIN_USERNAME") != "":
         login_username_fallback = os.getenv("CONAN_LOGIN_USERNAME")
     else:
-        login_username_fallback = BINCRAFTERS_LOGIN_USERNAME
+        login_username_fallback = CONAN_LOGIN_USERNAME
 
     username = kwargs.get("username", username_fallback)
     kwargs["channel"] = kwargs.get("channel", os.getenv("CONAN_CHANNEL", get_channel_from_ci()))
@@ -178,7 +179,7 @@ def get_conan_upload(username):
     if upload:
         return upload.split('@') if '@' in upload else upload
 
-    repository_name = os.getenv("BINTRAY_REPOSITORY", BINCRAFTERS_REPO_NAME)
+    repository_name = os.getenv("BINTRAY_REPOSITORY", CONAN_REPO_NAME)
     return get_user_repository(username, repository_name)
 
 
@@ -206,16 +207,16 @@ def get_conan_remotes(username, kwargs):
         else:
             # While redundant, this moves upload remote to position 0.
             remotes = [get_conan_upload(username)] if get_conan_upload(username) else []
-            # Add bincrafters repository for other users, e.g. if the package would
-            # require other packages from the bincrafters repo.
-            bincrafters_user = BINCRAFTERS_USERNAME
-            if username != bincrafters_user:
-                if get_conan_upload(bincrafters_user):
-                    remotes.append(get_conan_upload(bincrafters_user))
+            # Add afgs repository for other users, e.g. if the package would
+            # require other packages from the afgs repo.
+            afgs_user = CONAN_USERNAME
+            if username != afgs_user:
+                if get_conan_upload(afgs_user):
+                    remotes.append(get_conan_upload(afgs_user))
 
-            # Force Bincrafters repo on remotes
-            if BINCRAFTERS_REPO_URL not in remotes:
-                remotes.append(BINCRAFTERS_REPO_URL)
+            # Force afgs repo on remotes
+            if CONAN_REPO_URL not in remotes:
+                remotes.append(CONAN_REPO_URL)
 
     kwargs["remotes"] = remotes
     return kwargs
