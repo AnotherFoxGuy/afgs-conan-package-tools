@@ -38,7 +38,7 @@ def _run_windows_jobs_on_gha():
 
 
 def _do_discard_duplicated_build_ids() -> bool:
-    return get_bool_from_env("BPT_MATRIX_DISCARD_DUPLICATE_BUILD_IDS", default="true")
+    return get_bool_from_env("APT_MATRIX_DISCARD_DUPLICATE_BUILD_IDS", default="true")
 
 
 def _get_base_config(recipe_directory: str, platform: str, split_by_build_types: bool, build_set: str = "full",
@@ -62,49 +62,43 @@ def _get_base_config(recipe_directory: str, platform: str, split_by_build_types:
         run_windows = _run_windows_jobs_on_gha()
         if recipe_type == "installer":
             matrix["config"] = [
-                {"name": "Installer Linux", "compiler": "GCC", "version": "7", "os": "ubuntu-20.04",
+                {"name": "Installer Linux", "compiler": "GCC", "version": "7", "os": "ubuntu-22.04",
                  "dockerImage": "conanio/gcc7"},
                 {"name": "Installer Windows", "compiler": "VISUAL", "version": "16", "os": "windows-2019"},
-                {"name": "Installer macOS", "compiler": "APPLE_CLANG", "version": "11.0", "os": "macos-10.15"}
+                {"name": "Installer macOS", "compiler": "APPLE_CLANG", "version": "11.0", "os": "macos-13"}
             ]
             matrix_minimal["config"] = matrix["config"].copy()
         elif recipe_type == "unconditional_header_only":
             matrix["config"] = [
-                {"name": "Header-only Linux", "compiler": "CLANG", "version": "8", "os": "ubuntu-20.04"},
+                {"name": "Header-only Linux", "compiler": "CLANG", "version": "8", "os": "ubuntu-22.04"},
                 {"name": "Header-only Windows", "compiler": "VISUAL", "version": "16", "os": "windows-latest"}
             ]
             matrix_minimal["config"] = matrix["config"].copy()
         else:
             matrix["config"] = [
-                {"name": "GCC 5", "compiler": "GCC", "version": "5", "os": "ubuntu-20.04"},
-                {"name": "GCC 6", "compiler": "GCC", "version": "6", "os": "ubuntu-20.04"},
-                {"name": "GCC 7", "compiler": "GCC", "version": "7", "os": "ubuntu-20.04"},
-                {"name": "GCC 8", "compiler": "GCC", "version": "8", "os": "ubuntu-20.04"},
-                {"name": "GCC 9", "compiler": "GCC", "version": "9", "os": "ubuntu-20.04"},
-                {"name": "GCC 10", "compiler": "GCC", "version": "10", "os": "ubuntu-20.04"},
-                {"name": "GCC 11", "compiler": "GCC", "version": "11", "os": "ubuntu-20.04"},
-                {"name": "CLANG 10", "compiler": "CLANG", "version": "10", "os": "ubuntu-20.04"},
-                {"name": "CLANG 11", "compiler": "CLANG", "version": "11", "os": "ubuntu-20.04"},
-                {"name": "CLANG 12", "compiler": "CLANG", "version": "12", "os": "ubuntu-20.04"},
-                {"name": "CLANG 13", "compiler": "CLANG", "version": "13", "os": "ubuntu-20.04"},
+                {"name": "GCC 10", "compiler": "GCC", "version": "10", "os": "ubuntu-22.04"},
+                {"name": "GCC 11", "compiler": "GCC", "version": "11", "os": "ubuntu-22.04"},
+                {"name": "GCC 12", "compiler": "GCC", "version": "12", "os": "ubuntu-22.04"},
+                {"name": "GCC 13", "compiler": "GCC", "version": "13", "os": "ubuntu-22.04"},
+                {"name": "GCC 14", "compiler": "GCC", "version": "14", "os": "ubuntu-22.04"},
             ]
             if run_macos:
                 matrix["config"] += [
-                    {"name": "macOS Apple-Clang 11", "compiler": "APPLE_CLANG", "version": "11.0", "os": "macOS-10.15"},
-                    {"name": "macOS Apple-Clang 12", "compiler": "APPLE_CLANG", "version": "11.0", "os": "macOS-10.15"},
+                    {"name": "macOS Apple-Clang 11", "compiler": "APPLE_CLANG", "version": "11.0", "os": "macos-13"},
+                    {"name": "macOS Apple-Clang 12", "compiler": "APPLE_CLANG", "version": "11.0", "os": "macos-13"},
                 ]
             if run_windows:
                 matrix["config"] += [
                     {"name": "Windows VS 2019", "compiler": "VISUAL", "version": "16", "os": "windows-2019"},
-                    # {"name": "Windows VS 2022 - Testing", "compiler": "VISUAL", "version": "17", "os": "windows-2022"},
+                    {"name": "Windows VS 2022", "compiler": "VISUAL", "version": "17", "os": "windows-2022"},
                 ]
             matrix_minimal["config"] = [
-                {"name": "GCC 7", "compiler": "GCC", "version": "7", "os": "ubuntu-20.04"},
-                {"name": "CLANG 10", "compiler": "CLANG", "version": "10", "os": "ubuntu-20.04"},
+                {"name": "GCC 13", "compiler": "GCC", "version": "13", "os": "ubuntu-22.04"},
+                {"name": "CLANG 10", "compiler": "CLANG", "version": "10", "os": "ubuntu-22.04"},
             ]
             if run_macos:
                 matrix_minimal["config"] += [
-                    {"name": "macOS Apple-Clang 11", "compiler": "APPLE_CLANG", "version": "11.0", "os": "macOS-10.15"},
+                    {"name": "macOS Apple-Clang 11", "compiler": "APPLE_CLANG", "version": "11.0", "os": "macos-13"},
                 ]
             if run_windows:
                 matrix_minimal["config"] += [
@@ -117,23 +111,23 @@ def _get_base_config(recipe_directory: str, platform: str, split_by_build_types:
             matrix_minimal["config"] = []
         else:
             matrix["config"] = [
-                {"name": "macOS Apple-Clang 11", "compiler": "APPLE_CLANG", "version": "11.0", "os": "macOS-10.15"},
-                {"name": "macOS Apple-Clang 12", "compiler": "APPLE_CLANG", "version": "12.0", "os": "macOS-10.15"},
+                {"name": "macOS Apple-Clang 11", "compiler": "APPLE_CLANG", "version": "11.0", "os": "macos-13"},
+                {"name": "macOS Apple-Clang 12", "compiler": "APPLE_CLANG", "version": "12.0", "os": "macos-13"},
                 {"name": "Windows VS 2019", "compiler": "VISUAL", "version": "16", "os": "windows-2019"},
                 # {"name": "Windows VS 2022 - Testing", "compiler": "VISUAL", "version": "17", "os": "windows-2022"},
             ]
             matrix_minimal["config"] = [
-                {"name": "macOS Apple-Clang 11", "compiler": "APPLE_CLANG", "version": "11.0", "os": "macOS-10.15"},
+                {"name": "macOS Apple-Clang 11", "compiler": "APPLE_CLANG", "version": "11.0", "os": "macos-13"},
                 {"name": "Windows VS 2019", "compiler": "VISUAL", "version": "16", "os": "windows-2019"},
             ]
 
     # Split build jobs by build_type (Debug, Release)
     # Duplicate each builds job, then add the buildType value
     if split_by_build_types is None:
-        # env var BPT_MATRIX_SPLIT_BY_BUILD_TYPES should be preferred
-        # over BPT_SPLIT_BY_BUILD_TYPES and splitByBuildTypes (deprecated)
-        split_by_build_types = get_bool_from_env("BPT_MATRIX_SPLIT_BY_BUILD_TYPES",
-                                                 get_bool_from_env("BPT_SPLIT_BY_BUILD_TYPES",
+        # env var APT_MATRIX_SPLIT_BY_BUILD_TYPES should be preferred
+        # over APT_SPLIT_BY_BUILD_TYPES and splitByBuildTypes (deprecated)
+        split_by_build_types = get_bool_from_env("APT_MATRIX_SPLIT_BY_BUILD_TYPES",
+                                                 get_bool_from_env("APT_SPLIT_BY_BUILD_TYPES",
                                                                    get_bool_from_env("splitByBuildTypes", False)))
 
     if split_by_build_types:

@@ -15,7 +15,7 @@ printer = Printer()
 
 
 def get_recipe_path(cwd=None):
-    cwd = os.getenv("BPT_CWD", cwd)
+    cwd = os.getenv("APT_CWD", cwd)
     conanfile = os.getenv("CONAN_CONANFILE", "conanfile.py")
     if cwd is None:
         return os.path.abspath(conanfile)
@@ -172,7 +172,7 @@ def get_user_repository(username, repository_name):
 
 
 def get_conan_upload(username):
-    if os.getenv("BPT_NO_UPLOAD", "").lower() in ["true", "yes", "on", "1"]:
+    if os.getenv("APT_NO_UPLOAD", "").lower() in ["true", "yes", "on", "1"]:
         return False
 
     upload = os.getenv("CONAN_UPLOAD")

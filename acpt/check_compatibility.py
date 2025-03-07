@@ -9,7 +9,7 @@ MINIMUM_CONFIG_FILE_VERSIONS = {
 
 
 def get_config_file_version() -> int:
-    return int(os.getenv("BPT_CONFIG_FILE_VERSION", 0))
+    return int(os.getenv("APT_CONFIG_FILE_VERSION", 0))
 
 
 def get_minimum_compatible_version(platform: str, feature: str) -> int:

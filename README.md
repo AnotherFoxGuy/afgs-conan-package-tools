@@ -38,8 +38,8 @@ ___
 
 **BPT SPECIFIC ENVIRONMENT VARIBLES**:
 
-**BPT_MATRIX_SPLIT_BY_BUILD_TYPES**: Splits build jobs into `Release` and `Debug` build jobs.
-**BPT_MATRIX_DISCARD_DUPLICATE_BUILD_IDS**: `true`/`false`, default: `true`. This does NOT YET what it says. Right now, this only has an effect for installer_only and header_only recipes when set to `false`. In those cases, you get the full build matrix, instead of a shortened build matrix. In the future, the matrix generation actually compares build IDs and discards jobs based on the IDs.
+**APT_MATRIX_SPLIT_BY_BUILD_TYPES**: Splits build jobs into `Release` and `Debug` build jobs.
+**APT_MATRIX_DISCARD_DUPLICATE_BUILD_IDS**: `true`/`false`, default: `true`. This does NOT YET what it says. Right now, this only has an effect for installer_only and header_only recipes when set to `false`. In those cases, you get the full build matrix, instead of a shortened build matrix. In the future, the matrix generation actually compares build IDs and discards jobs based on the IDs.
 
 ___
 

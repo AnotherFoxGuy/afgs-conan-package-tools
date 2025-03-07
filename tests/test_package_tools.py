@@ -54,9 +54,9 @@ def set_upload_address():
 
 @pytest.fixture()
 def set_upload_address_false():
-    os.environ["BPT_NO_UPLOAD"] = "True"
+    os.environ["APT_NO_UPLOAD"] = "True"
     yield
-    del os.environ["BPT_NO_UPLOAD"]
+    del os.environ["APT_NO_UPLOAD"]
 
 
 @pytest.fixture()
@@ -133,14 +133,14 @@ def test_build_shared():
 
 def test_build_template_installer(set_installer_only_recipe):
     builder = build_autodetect._get_builder()
-    assert 1 == len(builder.items)
+    assert 4 == len(builder.items)
 
 
 def test_build_header_only(set_header_only_recipe):
     builder = build_autodetect._get_builder()
     for settings, options, env_vars, build_requires, reference in builder.items:
         assert 0 == len(options)
-    assert 1 == len(builder.items)
+    assert 4 == len(builder.items)
 
 
 def test_get_os():

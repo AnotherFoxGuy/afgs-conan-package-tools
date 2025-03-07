@@ -42,7 +42,7 @@ def prepare_env(platform: str, config: json, select_config: str = None):
     docker_image = config.get("dockerImage", "")
     build_type = config.get("buildType", "")
 
-    _set_env_variable("BPT_CWD", config["cwd"])
+    _set_env_variable("APT_CWD", config["cwd"])
     _set_env_variable("CONAN_VERSION", config["recipe_version"])
 
     if compiler == "APPLE_CLANG":

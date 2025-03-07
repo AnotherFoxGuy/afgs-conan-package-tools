@@ -136,8 +136,8 @@ def run_autodetect():
         # build.py files have no knowledge about the directory structure above them.
         # Delete the env variable or BPT is appending the path a second time
         # when build.py calls BPT
-        if "BPT_CWD" in os.environ:
-            del os.environ["BPT_CWD"]
+        if "APT_CWD" in os.environ:
+            del os.environ["APT_CWD"]
 
         subprocess.run("python build.py", cwd=new_wd, shell=True, check=True)
         return
