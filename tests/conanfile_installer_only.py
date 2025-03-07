@@ -1,7 +1,6 @@
-from conans import ConanFile, CMake, tools
-import os
-
-required_conan_version = ">=1.33.0"
+from conan import ConanFile
+from conan.tools.files import get, collect_libs
+from conan.tools.cmake import CMakeToolchain, CMake, CMakeDeps, cmake_layout
 
 
 class LibnameConan(ConanFile):
@@ -13,41 +12,38 @@ class LibnameConan(ConanFile):
     homepage = "https://github.com/original_author/original_lib"
     license = "MIT"  # Indicates license type of the packaged library; please use SPDX Identifiers https://spdx.org/licenses/
     exports_sources = ["CMakeLists.txt"]
-    generators = "cmake"
 
     settings = "os", "arch", "compiler", "build_type"
 
-    _source_subfolder = "source_subfolder"
-    _build_subfolder = "build_subfolder"
-    _cmake = None
+    def layout(self):
+        cmake_layout(self)
 
-    def package_id(self):
-        del self.info.settings.compiler
+    def requirements(self):
+        for req in self.conan_data["requirements"]:
+            self.requires(req)
 
     def source(self):
-        tools.get(**self.conan_data["sources"][self.version], strip_root=True, destination=self._source_subfolder)
+        get(self, **self.conan_data["sources"][self.version], strip_root=True)
 
-    def _configure_cmake(self):
-        if not self._cmake:
-            self._cmake = CMake(self)
-            self._cmake.definitions["BUILD_TESTS"] = False  # example
-            self._cmake.configure(build_folder=self._build_subfolder)
-        return self._cmake
+    def generate(self):
+        tc = CMakeToolchain(self)
+        tc.generate()
+        deps = CMakeDeps(self)
+        deps.generate()
 
     def build(self):
-        cmake = self._configure_cmake()
+        cmake = CMake(self)
+        cmake.configure()
         cmake.build()
 
     def package(self):
-        self.copy(pattern="LICENSE", dst="licenses", src=self._source_subfolder)
-        cmake = self._configure_cmake()
+        cmake = CMake(self)
         cmake.install()
-        # If the CMakeLists.txt has a proper install method, the steps below may be redundant
-        # If so, you can just remove the lines below
-        self.copy(pattern="tool_name", dst="bin", keep_path=False)
-        self.copy(pattern="tool_name.exe", dst="bin", keep_path=False)
 
     def package_info(self):
-        bindir = os.path.join(self.package_folder, "bin")
-        self.output.info("Appending PATH environment variable: {}".format(bindir))
-        self.env_info.PATH.append(bindir)
+        self.cpp_info.set_property("cmake_module_file_name", "Libname")
+        self.cpp_info.set_property("cmake_module_target_name", "Libname::Libname")
+        self.cpp_info.set_property("cmake_file_name", "Libname")
+        self.cpp_info.set_property("cmake_target_name", "Libname::Libname")
+        self.cpp_info.libs = collect_libs(self)
+

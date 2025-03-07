@@ -25,8 +25,6 @@ class FoobarConan(ConanFile):
                "shared": [True, False],  # Just another comment
                }
     default_options = "with_zlib=False", "build_tests=False", "static_rt=True", "build_binaries=True", "shared=False"
-    source_subfolder = "source_subfolder"
-    build_subfolder = "build_subfolder"
 
     def requirements(self):
         if self.options.with_zlib:
@@ -34,12 +32,21 @@ class FoobarConan(ConanFile):
 
     def source(self):
         repo_url = "https://github.com/afgs/foobar.git"
-        self.run("git clone -b v{0} {1} {2}".format(self.version, repo_url, self.source_subfolder))
+        self.run("git clone -b v{0} {1} {2}".format(self.version, repo_url, self.source_folder))
+
+    def generate(self):
+        tc = CMakeToolchain(self)
+        tc.generate()
+        deps = CMakeDeps(self)
+        deps.generate()
 
     def build(self):
         cmake = CMake(self)
-        cmake.configure(build_folder=self.build_subfolder)
+        cmake.configure()
         cmake.build()
+
+    def package(self):
+        cmake = CMake(self)
         cmake.install()
 
     def package_info(self):
@@ -62,12 +69,21 @@ class FoobarConan(ConanFile):
 
     def source(self):
         repo_url = "https://github.com/afgs/foobar.git"
-        self.run("git clone -b v{0} {1} {2}".format(self.version, repo_url, self.source_subfolder))
+        self.run("git clone -b v{0} {1} {2}".format(self.version, repo_url, self.source_folder))
+
+    def generate(self):
+        tc = CMakeToolchain(self)
+        tc.generate()
+        deps = CMakeDeps(self)
+        deps.generate()
 
     def build(self):
         cmake = CMake(self)
         cmake.configure()
         cmake.build()
+
+    def package(self):
+        cmake = CMake(self)
         cmake.install()
 
     def package_info(self):
@@ -86,7 +102,6 @@ recipe_with_no_shared_1 = """
 
     def package(self):
         self.copy("*.h", "include")
-
 
     def package_id(self):
         self.info.header_only()
@@ -109,8 +124,6 @@ class FoobarConan(ConanFile):
                "static_rt": [True, False]
                }
     default_options = "with_zlib=False", "build_tests=False", "static_rt=True", "build_binaries=True"
-    source_subfolder = "source_subfolder"
-    build_subfolder = "build_subfolder"
 
     def requirements(self):
         if self.options.with_zlib:
@@ -118,12 +131,21 @@ class FoobarConan(ConanFile):
 
     def source(self):
         repo_url = "https://github.com/afgs/foobar.git"
-        self.run("git clone -b v{0} {1} {2}".format(self.version, repo_url, self.source_subfolder))
+        self.run("git clone -b v{0} {1} {2}".format(self.version, repo_url, self.source_folder))
+
+    def generate(self):
+        tc = CMakeToolchain(self)
+        tc.generate()
+        deps = CMakeDeps(self)
+        deps.generate()
 
     def build(self):
         cmake = CMake(self)
-        cmake.configure(build_folder=self.build_subfolder)
+        cmake.configure()
         cmake.build()
+
+    def package(self):
+        cmake = CMake(self)
         cmake.install()
 
     def package_info(self):

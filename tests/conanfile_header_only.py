@@ -1,30 +1,20 @@
-from conans import ConanFile, tools
-import os
-
-required_conan_version = ">=1.33.0"
-
+from conan import ConanFile
+from conan.tools.files import copy
 
 class LibnameConan(ConanFile):
     name = "libname"
-    version = "1.0.0"
-    description = "Keep it short"
-    topics = ("libname", "logging")
-    url = "https://github.com/afgs/community"
-    homepage = "https://github.com/original_author/original_lib"
-    license = "MIT"  # Indicates license type of the packaged library; please use SPDX Identifiers https://spdx.org/licenses/
+    version = "0.1"
+    # No settings/options are necessary, this is header only
+    exports_sources = "include/*"
+    # We can avoid copying the sources to the build folder in the cache
     no_copy_source = True
 
-    settings = "os", "arch", "compiler", "build_type"
-
-    _source_subfolder = "source_subfolder"
-
-    def package_id(self):
-        self.info.header_only()
-
-    def source(self):
-        tools.get(**self.conan_data["sources"][self.version], strip_root=True, destination=self._source_subfolder)
-
     def package(self):
-        include_folder = os.path.join(self._source_subfolder, "include")
-        self.copy(pattern="LICENSE", dst="licenses", src=self._source_subfolder)
-        self.copy(pattern="*", dst="include", src=include_folder)
+        # This will also copy the "include" folder
+        copy(self, "*.h", self.source_folder, self.package_folder)
+
+    def package_info(self):
+        # For header-only packages, libdirs and bindirs are not used
+        # so it's necessary to set those as empty.
+        self.cpp_info.bindirs = []
+        self.cpp_info.libdirs = []

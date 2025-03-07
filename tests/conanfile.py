@@ -1,5 +1,5 @@
-from conans import ConanFile
-from conans import tools
+from conan import ConanFile
+from conan.tools.files import collect_libs, copy
 
 
 class FoobarConan(ConanFile):
@@ -8,12 +8,14 @@ class FoobarConan(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
     description = "<Description of Foobar here>"
     options = {"shared": [True, False]}
-    default_options = "shared=False"
+    default_options = {
+        "shared": False
+    }
     url = "None"
     license = "None"
 
     def package(self):
-        self.copy("*")
+        copy("*")
 
     def package_info(self):
-        self.cpp_info.libs = tools.collect_libs(self)
+        self.cpp_info.libs = collect_libs(self)

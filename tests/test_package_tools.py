@@ -8,9 +8,9 @@ from acpt import build_autodetect
 @pytest.fixture(autouse=True)
 def set_matrix_variables():
     if platform.system() == "Linux":
-        os.environ["CONAN_GCC_VERSIONS"] = "7"
+        os.environ["CONAN_GCC_VERSIONS"] = "13"
     elif platform.system() == "Windows":
-        os.environ["CONAN_VISUAL_VERSIONS"] = "15"
+        os.environ["CONAN_VISUAL_VERSIONS"] = "17"
     elif platform.system() == "Darwin":
         os.environ["CONAN_APPLE_CLANG_VERSIONS"] = "9.0"
 
