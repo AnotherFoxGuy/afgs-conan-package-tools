@@ -64,6 +64,7 @@ def _get_builder():
     kwargs = {}
 
     if autodetect_directory_structure() == DIR_STRUCTURE_ONE_RECIPE_MANY_VERSIONS \
+            or autodetect_directory_structure() == DIR_STRUCTURE_FLAT \
             or autodetect_directory_structure() == DIR_STRUCTURE_CCI:
         kwargs["stable_branch_pattern"] = os.getenv("CONAN_STABLE_BRANCH_PATTERN", "main")
 

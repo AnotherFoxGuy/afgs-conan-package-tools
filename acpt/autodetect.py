@@ -93,6 +93,7 @@ def autodetect() -> str:
 DIR_STRUCTURE_ONE_RECIPE_ONE_VERSION = "one_recipe_one_file"
 DIR_STRUCTURE_ONE_RECIPE_MANY_VERSIONS = "one_recipe_many_versions"
 DIR_STRUCTURE_CCI = "cci_many_recipes_many_versions"
+DIR_STRUCTURE_FLAT = "flat_many_recipes_many_versions"
 
 
 def autodetect_directory_structure() -> str:
@@ -109,5 +110,4 @@ def autodetect_directory_structure() -> str:
     if os.path.exists(os.path.join(pwd, "recipes")):
         return DIR_STRUCTURE_CCI
 
-    # Assume ONE_RECIPE_ONE_VERSION as the default for legacy reasons
-    return DIR_STRUCTURE_ONE_RECIPE_ONE_VERSION
+    return DIR_STRUCTURE_FLAT
