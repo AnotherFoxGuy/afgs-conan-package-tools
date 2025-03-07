@@ -251,6 +251,8 @@ def generate_ci_jobs(platform: str, recipe_type: str = autodetect(), split_by_bu
     elif directory_structure == DIR_STRUCTURE_FLAT:
         recipes = [f.path for f in os.scandir(os.getcwd()) if f.is_dir()]
         for recipe_folder in recipes:
+            if not os.path.isfile(os.path.join(recipe_folder, "config.yml")):
+                continue
             # the path_filter should end with a / so that the results don't start with one
             recipe_displayname = recipe_folder.replace(os.getcwd(), "")
             _parse_recipe_directory(path=recipe_folder,
