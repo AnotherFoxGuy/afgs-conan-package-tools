@@ -3,39 +3,17 @@ import os
 import subprocess
 
 
-def prepare_env(platform: str, config: json, select_config: str = None):
-    if platform != "gha" and platform != "azp":
-        raise ValueError("Only GitHub Actions and Azure Pipelines is supported at this point.")
-
-    if platform != "azp" and select_config is not None:
-        raise ValueError("The --select-config parameter can only be used with Azure Pipelines.")
-
-    if select_config:
-        config = config[select_config]
-
+def prepare_env(config: json):
     def _set_env_variable(var_name: str, value: str):
         print("{} = {}".format(var_name, value))
         os.environ[var_name] = value
-        if platform == "gha":
-            if compiler in ["VISUAL", "MSVC"]:
-                os.system('echo {}={}>> {}'.format(var_name, value, os.getenv("GITHUB_ENV")))
-            else:
-                subprocess.run(
-                    'echo "{}={}" >> $GITHUB_ENV'.format(var_name, value),
-                    shell=True
-                )
-
-        if platform == "azp":
-            if compiler in ["VISUAL", "MSVC"]:
-                subprocess.run(
-                    'echo ##vso[task.setvariable variable={}]{}'.format(var_name, value),
-                    shell=True
-                )
-            else:
-                subprocess.run(
-                    'echo "##vso[task.setvariable variable={}]{}"'.format(var_name, value),
-                    shell=True
-                )
+        if compiler in ["VISUAL", "MSVC"]:
+            os.system('echo {}={}>> {}'.format(var_name, value, os.getenv("GITHUB_ENV")))
+        else:
+            subprocess.run(
+                'echo "{}={}" >> $GITHUB_ENV'.format(var_name, value),
+                shell=True
+            )
 
     compiler = config["compiler"]
     compiler_version = config["version"]
@@ -67,42 +45,29 @@ def prepare_env(platform: str, config: json, select_config: str = None):
     if build_type != "":
         _set_env_variable("CONAN_BUILD_TYPES", build_type)
 
-    if platform == "gha" or platform == "azp":
-        if compiler == "APPLE_CLANG":
-            xcode_mapping = {
-                "9.1": "/Applications/Xcode_9.4.1.app",
-                "10.0": "/Applications/Xcode_10.3.app",
-                "11.0": "/Applications/Xcode_11.5.app",
-                "12.0": "/Applications/Xcode_12.4.app",
-                "13.0": "/Applications/Xcode_13.2.1.app",
-                "13.1": "/Applications/Xcode_13.4.1.app",
-                "14.0": "/Applications/Xcode_14.0.1.app",
-            }
-            if compiler_version in xcode_mapping:
-                subprocess.run(
-                    'sudo xcode-select -switch "{}"'.format(xcode_mapping[compiler_version]),
-                    shell=True
-                )
-                print('executing: xcode-select -switch "{}"'.format(xcode_mapping[compiler_version]))
-
+    if compiler == "APPLE_CLANG":
+        xcode_mapping = {
+            "9.1": "/Applications/Xcode_9.4.1.app",
+            "10.0": "/Applications/Xcode_10.3.app",
+            "11.0": "/Applications/Xcode_11.5.app",
+            "12.0": "/Applications/Xcode_12.4.app",
+            "13.0": "/Applications/Xcode_13.2.1.app",
+            "13.1": "/Applications/Xcode_13.4.1.app",
+            "14.0": "/Applications/Xcode_14.0.1.app",
+        }
+        if compiler_version in xcode_mapping:
             subprocess.run(
-                'clang++ --version',
+                'sudo xcode-select -switch "{}"'.format(xcode_mapping[compiler_version]),
                 shell=True
             )
+            print('executing: xcode-select -switch "{}"'.format(xcode_mapping[compiler_version]))
 
-        if compiler in ["VISUAL", "MSVC"]:
-            with open(os.path.join(os.path.dirname(__file__), "prepare_env_azp_windows.ps1"), "r") as file:
-                content = file.read()
-                file.close()
+        subprocess.run(
+            'clang++ --version',
+            shell=True
+        )
 
-            with open("execute.ps1", "w", encoding="utf-8") as file:
-                file.write(content)
-                file.close()
-
-            subprocess.run("pip install --upgrade cmake", shell=True, check=True)
-            subprocess.run("powershell -file {}".format(os.path.join(os.getcwd(), "execute.ps1")), shell=True, check=True)
-
-    if platform == "gha" and (compiler == "GCC" or compiler == "CLANG"):
+    if compiler == "GCC" or compiler == "CLANG":
         subprocess.run('docker system prune --all --force --volumes', shell=True)
         subprocess.run('sudo rm -rf "/usr/local/share/boost"', shell=True)
         subprocess.run('sudo rm -rf "$AGENT_TOOLSDIRECTORY/CodeQL"', shell=True)
@@ -111,4 +76,4 @@ def prepare_env(platform: str, config: json, select_config: str = None):
         subprocess.run('sudo rm -rf "$AGENT_TOOLSDIRECTORY/go"', shell=True)
         subprocess.run('sudo rm -rf "$AGENT_TOOLSDIRECTORY/node"', shell=True)
 
-    subprocess.run("conan user", shell=True)
+    subprocess.run("conan profile detect", shell=True)

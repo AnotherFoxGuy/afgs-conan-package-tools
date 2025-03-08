@@ -20,14 +20,13 @@ def utils_git_get_current_branch() -> str:
     def _clean_branch(branch):
         return branch[11:] if branch.startswith("refs/heads/") else branch
 
-    repobranch_azp = os.getenv("BUILD_SOURCEBRANCHNAME", "")
     repobranch_gha = _clean_branch(os.getenv("GITHUB_REF", ""))
     if os.getenv("GITHUB_EVENT_NAME", "") == "pull_request":
         repobranch_gha = _clean_branch(os.getenv("GITHUB_HEAD_REF", ""))
 
     repobranch_git = _utils_execute_script("git branch --show-current")
 
-    return repobranch_azp or repobranch_gha or repobranch_git
+    return repobranch_gha or repobranch_git
 
 
 def utils_git_get_current_commit() -> str:
@@ -63,6 +62,7 @@ def utils_file_contains(file, word):
             if word in content:
                 return True
     return False
+
 
 def split_colon_env(varname):
     if os.getenv(varname) is None:

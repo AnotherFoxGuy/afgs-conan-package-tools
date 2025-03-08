@@ -1,7 +1,5 @@
 # AnotherFoxGuy's Package Tools (A fork of Bincrafters Package Tools)
 
-## A modular toolset for [Conan Package Tools](https://github.com/AnotherFoxGuy/conan-package-tools)
-
 This project contains files used by Conan Package Tools for all kinds of builds.
 
 These scripts are used during build process to allow for rapid testing and prototyping at this time.
@@ -16,8 +14,7 @@ If you want to install by local copy
 
 ### Remote
 Or if you want to download our pip package
-    
-    pip install git+https://github.com/AnotherFoxGuy/conan-package-tools@conan2
+
     pip install git+https://github.com/AnotherFoxGuy/afgs-conan-package-tools@develop
 
 
@@ -55,7 +52,7 @@ To run all unit test + code coverage, just execute:
 
     pip install -r anotherfoxguy/requirements_test.txt
     cd tests
-    pytest -v --cov=afgs
+    pytest -v --cov=acpt
 
 
 #### LICENSE

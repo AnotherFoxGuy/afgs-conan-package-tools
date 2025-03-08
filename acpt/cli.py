@@ -14,8 +14,6 @@ def _parse_arguments(*args):
                         help="Executes builds according to current env variables and recipe type auto detection")
     subparsers = parser.add_subparsers(dest="commands")
     genmatrix = subparsers.add_parser("generate-ci-jobs", help="Provides a CI job matrix as a JSON-fied string")
-    genmatrix.add_argument('--platform', type=str, choices=["gha", "azp"],
-                        help="Specfies the CI platform")
     genmatrix.add_argument('--split-by-build-types', type=str, choices=["true", "false"],
                         help="Split build jobs by build types")
     prepareenv = subparsers.add_parser("prepare-env", help="Prepares the environment by setting env vars and similar")
@@ -23,8 +21,6 @@ def _parse_arguments(*args):
                         help="Specfies the CI platform")
     prepareenv.add_argument('--config', type=str, required=True,
                         help="JSON config string in the afgs-package-tools format")
-    prepareenv.add_argument('--select-config', type=str, required=False,
-                        help="AZP only; name which config pair gets applied")
     args = parser.parse_args(*args)
     return args
 
@@ -35,12 +31,12 @@ def run(*args):
         run_autodetect()
     elif arguments.commands == "prepare-env":
         config = json.loads(arguments.config)
-        prepare_env(platform=arguments.platform, config=config, select_config=arguments.select_config)
+        prepare_env(config=config)
     elif arguments.commands == "generate-ci-jobs":
         split_by_build_types = arguments.split_by_build_types
 
         # Note: it is important that we only print the matrix and absolutely nothing else
-        print(generate_ci_jobs(platform=arguments.platform, split_by_build_types=split_by_build_types))
+        print(generate_ci_jobs(split_by_build_types=split_by_build_types))
 
 
 def cli():

@@ -41,7 +41,7 @@ def _do_discard_duplicated_build_ids() -> bool:
     return get_bool_from_env("APT_MATRIX_DISCARD_DUPLICATE_BUILD_IDS", default="true")
 
 
-def _get_base_config(recipe_directory: str, platform: str, split_by_build_types: bool, build_set: str = "full",
+def _get_base_config(recipe_directory: str, split_by_build_types: bool, build_set: str = "full",
                      recipe_type: str = ""):
     if recipe_type == "":
         if _do_discard_duplicated_build_ids():
@@ -57,67 +57,50 @@ def _get_base_config(recipe_directory: str, platform: str, split_by_build_types:
     matrix = {}
     matrix_minimal = {}
 
-    if platform == "gha":
-        run_macos = _run_macos_jobs_on_gha()
-        run_windows = _run_windows_jobs_on_gha()
-        if recipe_type == "installer":
-            matrix["config"] = [
-                {"name": "Installer Linux", "compiler": "GCC", "version": "7", "os": "ubuntu-22.04",
-                 "dockerImage": "conanio/gcc7"},
-                {"name": "Installer Windows", "compiler": "VISUAL", "version": "16", "os": "windows-2019"},
-                {"name": "Installer macOS", "compiler": "APPLE_CLANG", "version": "11.0", "os": "macos-13"}
-            ]
-            matrix_minimal["config"] = matrix["config"].copy()
-        elif recipe_type == "unconditional_header_only":
-            matrix["config"] = [
-                {"name": "Header-only Linux", "compiler": "CLANG", "version": "8", "os": "ubuntu-22.04"},
-                {"name": "Header-only Windows", "compiler": "VISUAL", "version": "16", "os": "windows-latest"}
-            ]
-            matrix_minimal["config"] = matrix["config"].copy()
-        else:
-            matrix["config"] = [
-                {"name": "GCC 10", "compiler": "GCC", "version": "10", "os": "ubuntu-22.04"},
-                {"name": "GCC 11", "compiler": "GCC", "version": "11", "os": "ubuntu-22.04"},
-                {"name": "GCC 12", "compiler": "GCC", "version": "12", "os": "ubuntu-22.04"},
-                {"name": "GCC 13", "compiler": "GCC", "version": "13", "os": "ubuntu-22.04"},
-                {"name": "GCC 14", "compiler": "GCC", "version": "14", "os": "ubuntu-22.04"},
-            ]
-            if run_macos:
-                matrix["config"] += [
-                    {"name": "macOS Apple-Clang 11", "compiler": "APPLE_CLANG", "version": "11.0", "os": "macos-13"},
-                    {"name": "macOS Apple-Clang 12", "compiler": "APPLE_CLANG", "version": "11.0", "os": "macos-13"},
-                ]
-            if run_windows:
-                matrix["config"] += [
-                    {"name": "Windows VS 2019", "compiler": "VISUAL", "version": "16", "os": "windows-2019"},
-                    {"name": "Windows VS 2022", "compiler": "VISUAL", "version": "17", "os": "windows-2022"},
-                ]
-            matrix_minimal["config"] = [
-                {"name": "GCC 13", "compiler": "GCC", "version": "13", "os": "ubuntu-22.04"},
-                {"name": "CLANG 10", "compiler": "CLANG", "version": "10", "os": "ubuntu-22.04"},
-            ]
-            if run_macos:
-                matrix_minimal["config"] += [
-                    {"name": "macOS Apple-Clang 11", "compiler": "APPLE_CLANG", "version": "11.0", "os": "macos-13"},
-                ]
-            if run_windows:
-                matrix_minimal["config"] += [
-                    {"name": "Windows VS 2019", "compiler": "VISUAL", "version": "16", "os": "windows-2019"},
-                ]
-    elif platform == "azp":
-        if _is_gha_existing() and recipe_type in ["installer", "unconditional_header_only",
-                                                  "recipe_manual_full_matrix"]:
-            matrix["config"] = []
-            matrix_minimal["config"] = []
-        else:
-            matrix["config"] = [
+    run_macos = _run_macos_jobs_on_gha()
+    run_windows = _run_windows_jobs_on_gha()
+    if recipe_type == "installer":
+        matrix["config"] = [
+            {"name": "Installer Linux", "compiler": "GCC", "version": "7", "os": "ubuntu-22.04",
+             "dockerImage": "conanio/gcc7"},
+            {"name": "Installer Windows", "compiler": "VISUAL", "version": "16", "os": "windows-2019"},
+            {"name": "Installer macOS", "compiler": "APPLE_CLANG", "version": "11.0", "os": "macos-13"}
+        ]
+        matrix_minimal["config"] = matrix["config"].copy()
+    elif recipe_type == "unconditional_header_only":
+        matrix["config"] = [
+            {"name": "Header-only Linux", "compiler": "CLANG", "version": "8", "os": "ubuntu-22.04"},
+            {"name": "Header-only Windows", "compiler": "VISUAL", "version": "16", "os": "windows-latest"}
+        ]
+        matrix_minimal["config"] = matrix["config"].copy()
+    else:
+        matrix["config"] = [
+            {"name": "GCC 10", "compiler": "GCC", "version": "10", "os": "ubuntu-22.04"},
+            {"name": "GCC 11", "compiler": "GCC", "version": "11", "os": "ubuntu-22.04"},
+            {"name": "GCC 12", "compiler": "GCC", "version": "12", "os": "ubuntu-22.04"},
+            {"name": "GCC 13", "compiler": "GCC", "version": "13", "os": "ubuntu-22.04"},
+            {"name": "GCC 14", "compiler": "GCC", "version": "14", "os": "ubuntu-22.04"},
+        ]
+        if run_macos:
+            matrix["config"] += [
                 {"name": "macOS Apple-Clang 11", "compiler": "APPLE_CLANG", "version": "11.0", "os": "macos-13"},
-                {"name": "macOS Apple-Clang 12", "compiler": "APPLE_CLANG", "version": "12.0", "os": "macos-13"},
+                {"name": "macOS Apple-Clang 12", "compiler": "APPLE_CLANG", "version": "11.0", "os": "macos-13"},
+            ]
+        if run_windows:
+            matrix["config"] += [
                 {"name": "Windows VS 2019", "compiler": "VISUAL", "version": "16", "os": "windows-2019"},
-                # {"name": "Windows VS 2022 - Testing", "compiler": "VISUAL", "version": "17", "os": "windows-2022"},
+                {"name": "Windows VS 2022", "compiler": "VISUAL", "version": "17", "os": "windows-2022"},
             ]
-            matrix_minimal["config"] = [
+        matrix_minimal["config"] = [
+            {"name": "GCC 13", "compiler": "GCC", "version": "13", "os": "ubuntu-22.04"},
+            {"name": "CLANG 10", "compiler": "CLANG", "version": "10", "os": "ubuntu-22.04"},
+        ]
+        if run_macos:
+            matrix_minimal["config"] += [
                 {"name": "macOS Apple-Clang 11", "compiler": "APPLE_CLANG", "version": "11.0", "os": "macos-13"},
+            ]
+        if run_windows:
+            matrix_minimal["config"] += [
                 {"name": "Windows VS 2019", "compiler": "VISUAL", "version": "16", "os": "windows-2019"},
             ]
 
@@ -152,18 +135,10 @@ def _get_base_config(recipe_directory: str, platform: str, split_by_build_types:
         return {"config": []}
 
 
-def generate_ci_jobs(platform: str, recipe_type: str = autodetect(), split_by_build_types: bool = False) -> str:
-    if platform != "gha" and platform != "azp":
-        return ""
-
-    if not is_ci_config_compatible(platform=platform, feature="generate-ci-jobs"):
+def generate_ci_jobs(recipe_type: str = autodetect(), split_by_build_types: bool = False) -> str:
+    if not is_ci_config_compatible(feature="generate-ci-jobs"):
         raise Exception(
-            "afgs-package-tools {} requires a newer {} CI config file; minimum version {} - current version {}".format(
-                acpt.__version__,
-                platform,
-                get_minimum_compatible_version(platform=platform, feature="generate-ci-jobs"),
-                get_config_file_version()
-            ))
+            f"afgs-package-tools {acpt.__version__} requires a newer CI config file; minimum version {get_minimum_compatible_version(feature='generate-ci-jobs')} - current version {get_config_file_version()}")
 
     directory_structure = autodetect_directory_structure()
     final_matrix = {"config": []}
@@ -209,7 +184,6 @@ def generate_ci_jobs(platform: str, recipe_type: str = autodetect(), split_by_bu
                     if version_build_value == "full" or version_build_value == "minimal":
                         working_matrix = _get_base_config(
                             recipe_directory=os.path.join(path, version_attr["folder"]),
-                            platform=platform,
                             split_by_build_types=split_by_build_types,
                             build_set=version_build_value
                         )
@@ -228,7 +202,7 @@ def generate_ci_jobs(platform: str, recipe_type: str = autodetect(), split_by_bu
                         final_matrix["config"].append(new_config)
 
     if directory_structure == DIR_STRUCTURE_ONE_RECIPE_ONE_VERSION:
-        matrix = _get_base_config(recipe_directory=".", platform=platform, split_by_build_types=split_by_build_types)
+        matrix = _get_base_config(recipe_directory=".", split_by_build_types=split_by_build_types)
         for build_config in matrix["config"]:
             new_config = build_config.copy()
             new_config["cwd"] = "./"
@@ -247,7 +221,7 @@ def generate_ci_jobs(platform: str, recipe_type: str = autodetect(), split_by_bu
             _parse_recipe_directory(path=recipe_folder,
                                     path_filter="{}/".format(recipe_folder),
                                     recipe_displayname=recipe_displayname)
-            
+
     elif directory_structure == DIR_STRUCTURE_FLAT:
         recipes = [f.path for f in os.scandir(os.getcwd()) if f.is_dir()]
         for recipe_folder in recipes:
@@ -261,14 +235,4 @@ def generate_ci_jobs(platform: str, recipe_type: str = autodetect(), split_by_bu
 
     # Now where we have the complete matrix, we have to parse it in a final string
     # which can be understood by the target platform
-    matrix_string = "{}"
-
-    if platform == "gha":
-        matrix_string = json.dumps(final_matrix)
-    elif platform == "azp":
-        platform_matrix = {}
-        for build_config in final_matrix["config"]:
-            platform_matrix[build_config["name"]] = build_config
-        matrix_string = json.dumps(platform_matrix)
-
-    return matrix_string
+    return json.dumps(final_matrix)
