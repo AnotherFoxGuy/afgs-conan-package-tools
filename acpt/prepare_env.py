@@ -17,7 +17,6 @@ def prepare_env(config: json):
 
     compiler = config["compiler"]
     compiler_version = config["version"]
-    docker_image = config.get("dockerImage", "")
     build_type = config.get("buildType", "")
 
     _set_env_variable("APT_CWD", config["cwd"])
@@ -28,19 +27,6 @@ def prepare_env(config: json):
             compiler_version = "{}.0".format(compiler_version)
 
     _set_env_variable("CONAN_{}_VERSIONS".format(compiler), compiler_version)
-
-    if compiler == "GCC" or compiler == "CLANG":
-        if docker_image == "":
-            compiler_lower = compiler.lower()
-            version_without_dot = compiler_version.replace(".", "")
-            image_suffix = ""
-            # Use "modern" CDT containers for newer compilers
-            if (compiler == "GCC" and float(compiler_version) >= 11) or \
-                    (compiler == "CLANG" and float(compiler_version) >= 10):
-                image_suffix = "-ubuntu18.04"
-
-            docker_image = "conanio/{}{}{}".format(compiler_lower, version_without_dot, image_suffix)
-        _set_env_variable("CONAN_DOCKER_IMAGE", docker_image)
 
     if build_type != "":
         _set_env_variable("CONAN_BUILD_TYPES", build_type)

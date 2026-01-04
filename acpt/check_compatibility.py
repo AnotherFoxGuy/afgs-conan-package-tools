@@ -16,7 +16,7 @@ def get_minimum_compatible_version(feature: str) -> int:
     return MINIMUM_CONFIG_FILE_VERSIONS[feature]
 
 
-def is_ci_config_compatible(platform: str, feature: str) -> bool:
+def is_ci_config_compatible(feature: str) -> bool:
     config_version = get_config_file_version()
     minimum_version = get_minimum_compatible_version(feature=feature)
 
