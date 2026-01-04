@@ -61,8 +61,7 @@ def _get_base_config(recipe_directory: str, split_by_build_types: bool, build_se
     run_windows = _run_windows_jobs_on_gha()
     if recipe_type == "installer":
         matrix["config"] = [
-            {"name": "Installer Linux", "compiler": "GCC", "version": "7", "os": "ubuntu-22.04",
-             "dockerImage": "conanio/gcc7"},
+            {"name": "Installer Linux", "compiler": "GCC", "version": "13", "os": "ubuntu-22.04"},
             {"name": "Installer Windows", "compiler": "VISUAL", "version": "16", "os": "windows-2019"},
             {"name": "Installer macOS", "compiler": "APPLE_CLANG", "version": "11.0", "os": "macos-13"}
         ]
@@ -70,7 +69,7 @@ def _get_base_config(recipe_directory: str, split_by_build_types: bool, build_se
     elif recipe_type == "unconditional_header_only":
         matrix["config"] = [
             {"name": "Header-only Linux", "compiler": "CLANG", "version": "8", "os": "ubuntu-22.04"},
-            {"name": "Header-only Windows", "compiler": "VISUAL", "version": "16", "os": "windows-latest"}
+            {"name": "Header-only Windows", "compiler": "VISUAL", "version": "16", "os": "windows-2022"}
         ]
         matrix_minimal["config"] = matrix["config"].copy()
     else:
@@ -78,8 +77,8 @@ def _get_base_config(recipe_directory: str, split_by_build_types: bool, build_se
             {"name": "GCC 10", "compiler": "GCC", "version": "10", "os": "ubuntu-22.04"},
             {"name": "GCC 11", "compiler": "GCC", "version": "11", "os": "ubuntu-22.04"},
             {"name": "GCC 12", "compiler": "GCC", "version": "12", "os": "ubuntu-22.04"},
-            {"name": "GCC 13", "compiler": "GCC", "version": "13", "os": "ubuntu-22.04"},
-            {"name": "GCC 14", "compiler": "GCC", "version": "14", "os": "ubuntu-22.04"},
+            {"name": "GCC 13", "compiler": "GCC", "version": "13", "os": "ubuntu-24.04"},
+            {"name": "GCC 14", "compiler": "GCC", "version": "14", "os": "ubuntu-24.04"},
         ]
         if run_macos:
             matrix["config"] += [

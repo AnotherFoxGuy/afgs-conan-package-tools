@@ -1,17 +1,13 @@
 import os
 import re
 import platform
-from conans.client.loader import ConanFileLoader
-from cpt.packager import ConanMultiPackager
-from cpt.tools import split_colon_env
-from cpt.remotes import RemotesManager
-# from cpt.ci_manager import *
-from cpt.printer import Printer
+from conan.api.conan_api import ConanAPI
+from conan.internal.loader import ConanFileLoader, load_python_file
+from acpt.printer import Printer
 from acpt.build_paths import CONAN_REPO_URL, CONAN_LOGIN_USERNAME, CONAN_USERNAME, CONAN_REPO_NAME
 from acpt.utils import split_colon_env
 
 printer = Printer()
-# ci_manager = CIManager(printer=printer)
 
 
 def get_recipe_path(cwd=None):
@@ -195,7 +191,9 @@ def get_conan_remotes(username, kwargs):
             remotes = remotes.split(',')
             for remote in reversed(remotes):
                 if '@' in remote:
-                    remote = RemotesManager._get_remote_from_str(remote, var_name=remote)
+                    conan_api = ConanAPI()
+                    remote = conan_api.remotes.get(remote).name
+                    # remote = RemotesManager._get_remote_from_str(remote, var_name=remote)
         else:
             # While redundant, this moves upload remote to position 0.
             remotes = [get_conan_upload(username)] if get_conan_upload(username) else []
